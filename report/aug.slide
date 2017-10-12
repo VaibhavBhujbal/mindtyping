@@ -1,0 +1,28 @@
+Mind Typing Monthly Report
+23 Aug 2017
+
+Hua Zhihao, Ma Teng, Dong Sheng, Chu Da
+
+* Hardware
+.image hardware.jpg _ 1000
+
+* EEG Processing
+.image eeg.png _ 1000
+
+* EEG Processing
+In the evoked potentials part we used the visual evoked potential (VEP) and combine the spontane .
+We choose the Wavelet Transform to deal with the data, which can overcome the deficiency of the traditional EEG signals and extract the time - varying information.
+.image formula1.png _ 1000
+.image formula2.png _ 1000
+
+* Tooling
+.image py1.jpg _ 900
+
+* Tooling
+.image py2.jpg _ 900
+
+* GUI Demo
+.iframe https://www.youtube.com/embed/QvQiINj7Oys 600 1000
+
+* GUI Demo
+.iframe https://www.youtube.com/embed/TbWVkMyqXDs 600 1000

@@ -18,7 +18,7 @@ Locked in patients currently are unable to communicate their needs, thoughts and
 * Test connectivity between Cyton Board and Dongle
 * Test pin cabling with electrodes
 * Test extra channels with Daisy Module
-* Test EMG and EEG activities against OpenBCI GUI
+* Test EEG activities against OpenBCI GUI
 
 
 ### Data Collection and Analysis
@@ -46,18 +46,14 @@ Locked in patients currently are unable to communicate their needs, thoughts and
 #### Tasks:
 
 * Build a daemon reading signals from tty and translate into keyboard inputs
-* ...
-
 
 ### Product Development
 
 #### Time Requirement:
 
-4 weeks (8 days)
+5 weeks (10 days)
 
-* Build a GUI program showing a software keyboard and accepting keyboard inputs from daemon
-* ...
-
+* Build an installable GUI program (.exe) showing a software keyboard and reading EEG signals from OpenBCI Dongle.
 
 ### Testing and Reporting
 
@@ -69,3 +65,11 @@ Locked in patients currently are unable to communicate their needs, thoughts and
 
 * Collect more test data and generate a specific report about accuracy and precision
 * ...
+### division of work
+* Hua Zhihao --- the project manager -- Control the whole process of project and implement the software. 
+* Ma Teng --- the developer of project --- major part of Node.js server and assist the Hua Zhihao to implement the software.
+* Dong Sheng -- the developer of project --- assist the Hua Zhihao to implement the software and charge the data collection and analysis
+* Chu Da -- QA&DA in the project --- Do the test in the project and data collection and data analysis
+
+Actually in the whole project we will help each other, and our role will overlap, because we only have four person and all of us want to take part in the every process of this project to learn new things.
+

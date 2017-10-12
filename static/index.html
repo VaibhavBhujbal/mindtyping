@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
+
+
+    <style>
+        body {
+            position: relative;
+        }
+
+        #board {
+            height: 120px;
+            width: 800px;
+            line-height: 100px;
+            vertical-align: middle;
+            font-size: 80px;
+            color: #563d7c;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        #container {
+            width: 800px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .letter-list {
+            margin-right: auto;
+            margin-left: auto;
+            list-style: none;
+        }
+
+        .letter-list li {
+            width: 120px;
+            height: 120px;
+            line-height: 120px;
+            padding: 10px;
+            text-align: center;
+            vertical-align: middle;
+            display: inline-block;
+            font-size: 80px;
+            background-color: #f9f9f9;
+            border: 1px solid #fff;
+        }
+
+        .letter-list li.current {
+            color: #fff;
+            background-color: #563d7c;
+        }
+
+        #inputs {
+            width: 800px;
+            margin-right: auto;
+            margin-left: auto;
+            font-size: 20px;
+            word-wrap: break-word;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #leftpane,
+        #rightpane {
+            width: 200px;
+            background: #000;
+            position: absolute;
+            display: none;
+        }
+
+        #leftpane {
+            top: 0;
+            left: 0;
+            text-align: left;
+        }
+
+        #rightpane {
+            top: 0;
+            right: 0;
+            text-align: right;
+        }
+
+        #ArrowUp,
+        #ArrowDown,
+        #ArrowLeft,
+        #ArrowRight,
+        #Enter {
+            background: #000;
+            opacity: 0.8;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 200px;
+            position: absolute;
+            border: 2px solid #000;
+            display: none;
+        }
+
+        #ArrowUp,
+        #ArrowDown {
+            width: 100%;
+            height: 400px;
+            line-height: 400px;
+        }
+
+        #ArrowLeft,
+        #ArrowRight {
+            width: 50%;
+            height: 800px;
+            line-height: 800px;
+        }
+
+        #ArrowUp {
+            top: 0;
+            left: 0;
+        }
+
+        #ArrowDown {
+            top: 400px;
+            left: 0;
+        }
+
+        #ArrowLeft {
+            top: 0;
+            left: 0;
+        }
+
+        #ArrowRight {
+            top: 0;
+            right: 0;
+        }
+
+        #Enter {
+            top: 200px;
+            left: 440px;
+            width: 400px;
+            line-height: 400px;
+            height: 400px;
+            border-radius: 200px;
+            color: #66ff33;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="board"></div>
+        <div id="alphabet">
+            <ul class="letter-list">
+            </ul>
+        </div>
+    </div>
+    <div id="leftpane">
+    </div>
+    <div id="rightpane">
+    </div>
+    <div id="ArrowUp" class="arrow">↑</div>
+    <div id="ArrowDown" class="arrow">↓</div>
+    <div id="ArrowLeft" class="arrow">←</div>
+    <div id="ArrowRight" class="arrow">→</div>
+    <div id="ArrowRight" class="arrow">→</div>
+    <div id="Enter" class="arrow">✓</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/smoothie/1.29.1/smoothie.min.js"></script>
+    <script src="/brain.min.js"></script>
+    <script>
+        function Timeline($parent) {
+            this.data = new TimeSeries();
+            this.chart = new SmoothieChart();//{ maxValue: maxValue, minValue: minValue }
+            this.chart.addTimeSeries(this.data, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 1 });
+            var chartEl = document.createElement("CANVAS");
+            chartEl.setAttribute("width", "200");
+            chartEl.setAttribute("height", "100%");
+            this.chart.streamTo(chartEl, 500);
+            $parent.append(chartEl);
+        }
+        Timeline.prototype.sample = function (s) {
+            this.data.append(new Date().getTime(), s);
+        }
+        function move(i) {
+            idx = (idx + letters.length + i) % letters.length
+            $("#alphabet li.current").removeClass("current")
+            $("#alphabet li").eq(idx).addClass("current")
+        }
+        function input(key) {
+            switch (key) {
+                case "ArrowUp": move(-6); return false;
+                case "ArrowDown": move(6); return false;
+                case "ArrowLeft": move(-1 + ((idx % 6) ? 0 : 6)); return false;
+                case "ArrowRight": move(1 - (((idx + 1) % 6) ? 0 : 6)); return false;
+                case "Enter":
+                case " ": {
+                    if (idx == letters.length - 1) {
+                        var board = $("#board").html()
+                        $("#board").html(board.substr(0, board.length - 1))
+                    } else {
+                        $("#board").append(letters[idx]);
+                    }
+                    return false;
+                }
+            }
+        }
+        function keyup(e) {
+            switch (e.key) {
+                case "ArrowUp":
+                case "ArrowDown":
+                case "ArrowLeft":
+                case "ArrowRight":
+                case "Enter": {
+                    key = e.key
+                    $(".arrow").hide()
+                    $("#" + e.key).show()
+                    return false;
+                }
+                case " ": {
+                    input(key)
+                    return false;
+                }
+                case ".": {
+                    locked = !locked;
+                    return false;
+                }
+                case "/": {
+                    $("#leftpane").toggle()
+                    $("#rightpane").toggle()
+                    return false;
+                }
+            }
+        }
+        net = new brain.NeuralNetwork();
+
+        $.getJSON("train.json", function (data) {
+            net.train(data)
+        })
+        key = ""
+        blinking = false
+        idx = 0
+        letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_☺☹⌫".split("")
+        process = 1;
+        counter = 0;
+        socket = io.connect('http://' + location.host.replace(/:.+/, ""));
+        x = [0, 0, 0, 0, 0, 0, 0, 0]
+        x0 = null
+        delta = [0, 0, 0, 0, 0, 0, 0, 0]
+        locked = false
+        $(function () {
+            $("#alphabet .letter-list").html($.map(letters, function (l) {
+                return "<li>" + l + "</li>"
+            }).join(""))
+            $("#alphabet li").first().addClass("current")
+            $(document.body).keyup(keyup)
+            waves = []
+            for (var i = 0; i < 8; i++) {
+                waves.push(new Timeline($("#leftpane")))
+            }
+            for (var i = 0; i < 8; i++) {
+                waves.push(new Timeline($("#rightpane")))
+            }
+
+            socket.on('openbci', function (sample) {
+                if (process % 3 == 0) {
+                    for (var i = 0; i < 8; i++) {
+                        waves[i].sample(sample[i]);
+                    }
+                    process = 1;
+                }
+                process++
+                counter++
+                if (counter % 100 == 0) {
+                    if (x0) {
+                        for (var i = 0; i < 8; i++) {
+                            delta[i] = parseInt(Math.abs((x[i] - x0[i]) / x[i]) * 10000)
+                        }
+                        if (!locked) {
+                            if (counter % 500 == 0) {
+                                switch (net.run(x)) {
+                                    case 0: key = "ArrowUp"; break;
+                                    case 1: key = "ArrowDown"; break;
+                                    case 2: key = "ArrowLeft"; break;
+                                    case 3: key = "ArrowRight"; break;
+                                    case 4: key = "Enter"; break;
+                                }
+                            }
+                            $(".arrow").hide()
+                            $("#" + key).show()
+                            if (delta[0] > 100 && delta[1] > 100 && delta[6] > 200 && delta[7] > 200) {
+                                if (!blinking) {
+                                    input(key)
+                                }
+                                blinking = true
+                            } else {
+                                blinking = false
+                            }
+                        }
+
+                    }
+                    x0 = x
+                    x = [0, 0, 0, 0, 0, 0, 0, 0]
+
+                } else {
+                    for (var i = 0; i < 8; i++) {
+                        x[i] += sample[i]
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

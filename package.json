@@ -1,0 +1,13 @@
+{
+  "name": "mindtyping",
+  "version": "0.0.1",
+  "main": "socket_server.js",
+  "dependencies": {
+    "socket.io": "^0.9.16",
+    "node-static": "^0.7.3"
+  },
+  "devDependencies": {
+    "socket.io": "0.9.16"
+  },
+  "author": "Hua Zhihao"
+}
