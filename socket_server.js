@@ -10,7 +10,7 @@ var UDP_HOST = '0.0.0.0',
     SERVER_PORT = 8880,
     HTDOCS_PATH = '/static';
 
-
+console.log('Serve on http://127.0.0.1:8880');
 
 /**
  * A client of the UDP server that will be broadcasting packets of
