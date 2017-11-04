@@ -69,6 +69,9 @@ OpenBCIServer.prototype.serveStatic = function(req, res) {
   if (file == '/') {
     file = '/index.html';
   }
+  if (file == '/train') {
+    file = '/train.html';
+  }
   fs.readFile(__dirname + this.htdocs + file,
       function(err, data) {
         if (err) {
