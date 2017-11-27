@@ -215,12 +215,10 @@
                 case "ArrowLeft":
                 case "ArrowRight":
                 case "Enter": {
-                    if(!locked){
-                        key = e.key
-                        $(".arrow").hide()
-                        $("#" + e.key).show()
-                        $("#Enter").html(letters[idx])
-                    }
+                    key = e.key
+                    $(".arrow").hide()
+                    $("#" + e.key).show()
+                    $("#Enter").html(letters[idx])
                     return false;
                 }
                 case " ": {
@@ -229,6 +227,7 @@
                 }
                 case ".": {
                     locked = !locked;
+                    console.log("locked:"+locked)
                     return false;
                 }
                 case "/": {
@@ -308,9 +307,13 @@
                             }
                             $(".arrow").hide()
                             $("#" + key).show()
-                            if (delta[0] > 100 && delta[1] > 100 && delta[6] > 200 && delta[7] > 200) {
+                            $("#Enter").html(letters[idx])
+                            console.log(delta[0],delta[1],delta[6],delta[7])
+                            if (delta[0] > 100 && delta[1] > 100) {
                                 if (!blinking) {
-                                    input(key)
+                                    if(!locked){
+                                        input(key)
+                                    }
                                 }
                                 blinking = true
                             } else {

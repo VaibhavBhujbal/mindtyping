@@ -228,18 +228,15 @@
                 case "ArrowLeft": move(-1 + ((idx % 6) ? 0 : 6)); return false;
                 case "ArrowRight": move(1 - (((idx + 1) % 6) ? 0 : 6)); return false;
                 case "Enter": {
-                    if ($("#alphabet").css("display") != "none") {
-                        if (idx == letters.length - 1) {
-                            var board = $("#board").html()
-                            $("#board").html(board.substr(0, board.length - 1))
-                        } else {
-                            $("#board").append(letters[idx]);
-                        }
+                    if (idx == letters.length - 1) {
+                        var board = $("#board").html()
+                        $("#board").html(board.substr(0, board.length - 1))
+                    } else {
+                        $("#board").append(letters[idx]);
                     }
                     return false;
                 }
             }
-
         }
         function keyup(e) {
             switch (e.key) {
@@ -249,12 +246,10 @@
                 case "ArrowRight":
                 case "Enter": {
                     if (arrow_filter && arrow_filter == e.key) {
-                        if(!locked){
-                            key = e.key
-                            $(".arrow").hide()
-                            $("#" + e.key).show()
-                            $("#Enter").html(letters[idx])
-                        }
+                    	key = e.key
+                    	$(".arrow").hide()
+                    	$("#" + e.key).show()
+                    	$("#Enter").html(letters[idx])
                     }
                     return false;
                 }
@@ -268,6 +263,7 @@
                 }
                 case ".": {
                     locked = !locked;
+                    console.log("locked:"+locked)
                     return false;
                 }
                 case "/": {
@@ -276,18 +272,18 @@
                     return false;
                 }
                 case "=": {
-                    if (opacity < 9) {
+                    if (opacity < 9){
                         opacity++
                     }
-                    $(".arrow").css({ opacity: opacity / 10.0 })
-                    return false;
+                    $(".arrow").css({opacity: opacity/10.0})
+                    return
                 }
                 case "-": {
-                    if (opacity > 1) {
+                    if (opacity > 1){
                         opacity--
                     }
-                    $(".arrow").css({ opacity: opacity / 10.0 })
-                    return false;
+                    $(".arrow").css({opacity: opacity/10.0})
+                    return
                 }
             }
         }
@@ -310,7 +306,6 @@
                 return "<li>" + l + "</li>"
             }).join(""))
             $("#alphabet li").first().addClass("current")
-
             $(document.body).keyup(keyup)
             waves = []
             for (var i = 0; i < 8; i++) {
@@ -344,11 +339,20 @@
                                     case 4: key = "Enter"; break;
                                 }
                             }
-                            $(".arrow").hide()
-                            $("#" + key).show()
-                            if (delta[0] > 100 && delta[1] > 100 && delta[6] > 200 && delta[7] > 200) {
+                            if (arrow_filter && arrow_filter == key) {
+                                $(".arrow").hide()
+                                $("#" + key).show()
+                                $("#Enter").html(letters[idx])
+                            }
+                            console.log(delta[0],delta[1],delta[6],delta[7])
+                            if (delta[0] > 100 && delta[1] > 100) {
                                 if (!blinking) {
-                                    input(key)
+                                    if(!locked){
+                                        var step = steps.shift()
+                                        if (!!step) {
+                                            step()
+                                        }
+                                    }
                                 }
                                 blinking = true
                             } else {
